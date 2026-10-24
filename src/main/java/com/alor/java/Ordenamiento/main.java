@@ -5,6 +5,19 @@ import java.util.Random;
 import java.util.Scanner;
 
 public class main {
+
+    // Función auxiliar para imprimir la vista previa sin colapsar la terminal
+    private static void mostrarVistaPrevia(int[] arr, String titulo) {
+        int n = arr.length;
+        if (n <= 10) {
+            System.out.println("[" + titulo + "] (" + n + " elementos): " + Arrays.toString(arr));
+        } else {
+            System.out.printf("[%s] (%d elementos): [%d, %d, %d, %d, %d, ..., %d, %d, %d, %d, %d]\n",
+                    titulo, n, arr[0], arr[1], arr[2], arr[3], arr[4],
+                    arr[n-5], arr[n-4], arr[n-3], arr[n-2], arr[n-1]);
+        }
+    }
+
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
         Random rand = new Random();
@@ -33,10 +46,16 @@ public class main {
 
             if (opcion == 0) break;
 
-            // Clonar el arreglo para ordenar siempre una lista desordenada
+            // 1. Clonar el arreglo PRIMERO para mantener intacto el original
             int[] arrTest = arrOriginal.clone();
 
-            long startTime = System.nanoTime(); // Medición de alta precisión
+            // 2. Mostrar la vista previa ANTES de iniciar el cronómetro
+            System.out.println("\n============================================================");
+            System.out.println("🚀 Procesando datos...");
+            mostrarVistaPrevia(arrTest, "ANTES de ordenar");
+
+            // 3. Iniciar cronómetro de alta precisión
+            long startTime = System.nanoTime();
 
             switch (opcion) {
                 case 1: algoritmos.insertionSort(arrTest); break;
@@ -48,9 +67,14 @@ public class main {
                 default: System.out.println("Opción no válida."); continue;
             }
 
+            // 4. Detener cronómetro inmediatamente después de la ejecución
             long endTime = System.nanoTime();
-            double durationMs = (endTime - startTime) / 1_000_000.0;
 
+            // 5. Mostrar resultados visuales y calcular tiempos
+            mostrarVistaPrevia(arrTest, "DESPUÉS de ordenar");
+            System.out.println("============================================================");
+
+            double durationMs = (endTime - startTime) / 1_000_000.0;
             System.out.printf("Tiempo de ejecución: %.4f milisegundos (%d ns)\n", durationMs, (endTime - startTime));
         }
         scanner.close();

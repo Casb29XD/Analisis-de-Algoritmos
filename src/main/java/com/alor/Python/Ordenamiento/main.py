@@ -3,6 +3,13 @@ import time
 # Asegúrate de que el archivo con las funciones se llame algoritmos_ordenamiento.py
 import algoritmos_ordenamiento as alg
 
+def mostrar_vista_previa(arr, titulo="Estado"):
+    n = len(arr)
+    if n <= 10:
+        print(f"[{titulo}] ({n} elementos): {arr}")
+    else:
+        print(f"[{titulo}] ({n} elementos): {arr[:5]} ... {arr[-5:]}")
+
 def main():
     print("--- PRUEBAS DE ORDENAMIENTO (PYTHON) ---")
     try:
@@ -28,10 +35,20 @@ def main():
         if opcion == '0':
             break
 
-        # Clonar para ordenar siempre un arreglo desordenado
+        print("\n" + "="*60)
+        print("🚀 Procesando datos...")
+        mostrar_vista_previa(arr_test, "ANTES de ordenar")
+
+        start_time = time.perf_counter_ns()
+        # 1. Clonar el arreglo PRIMERO
         arr_test = arr_original.copy()
 
-        # Medición de alta precisión en nanosegundos
+        # 2. Mostrar la vista previa ANTES de iniciar el cronómetro
+        print("\n" + "="*60)
+        print("🚀 Procesando datos...")
+        mostrar_vista_previa(arr_test, "ANTES de ordenar")
+
+        # 3. Iniciar cronómetro de alta precisión justo antes del algoritmo
         start_time = time.perf_counter_ns()
 
         if opcion == '1':
@@ -50,7 +67,13 @@ def main():
             print("Opción no válida.")
             continue
 
+        # 4. Detener cronómetro inmediatamente después
         end_time = time.perf_counter_ns()
+
+        # 5. Mostrar resultados visuales y tiempos
+        mostrar_vista_previa(arr_test, "DESPUÉS de ordenar")
+        print("="*60)
+
         duracion_ns = end_time - start_time
         duracion_ms = duracion_ns / 1_000_000.0
 
