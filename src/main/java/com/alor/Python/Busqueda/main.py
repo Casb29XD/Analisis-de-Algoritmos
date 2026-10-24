@@ -1,7 +1,7 @@
 import random
 import time
 # Asegúrate de que el archivo con las funciones se llame algoritmos_busqueda.py
-import algoritmos_busqueda as alg
+import Busqueda as alg
 
 def main():
     print("--- PRUEBAS DE BÚSQUEDA (PYTHON) ---")
