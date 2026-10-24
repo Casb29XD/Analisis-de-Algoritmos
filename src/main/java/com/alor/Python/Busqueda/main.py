@@ -1,71 +1,87 @@
 import random
 import time
-# Asegúrate de que el archivo con las funciones se llame algoritmos_busqueda.py
 import Busqueda as alg
 
 def main():
-    print("--- PRUEBAS DE BÚSQUEDA (PYTHON) ---")
+    print("--- PRUEBAS DE BÚSQUEDA AUTOMATIZADAS (PYTHON) ---")
     try:
-        n = int(input("Ingrese el tamaño del arreglo ordenado (ej. 10000): "))
+        n = int(input("Ingrese el tamaño del arreglo ordenado (ej. 1000000): "))
     except ValueError:
-        n = 10000
-        print("Valor inválido, usando 10000 por defecto.")
+        n = 1000000
+        print("Valor inválido, usando 1.000.000 por defecto.")
 
-    # Generar y ordenar el arreglo original
+    print(f"Generando arreglo de {n} elementos...")
     arr_original = [random.randint(10000000, 99999999) for _ in range(n)]
     arr_original.sort()
 
-    x_input = input("Ingrese el número a buscar (o presione Enter para uno aleatorio que exista): ")
-    if x_input.strip() == "":
-        x = random.choice(arr_original)
-        print(f"Buscando el número: {x}")
-    else:
-        x = int(x_input)
+    # Preparar lote de 1000 claves para el Promedio General
+    presentes = random.sample(arr_original, 500)
+    ausentes = [random.randint(1, 9999999) for _ in range(500)]
+    claves_mezcladas = presentes + ausentes
+    random.shuffle(claves_mezcladas)
+
+    # Claves para pruebas de posición
+    clave_inicio = arr_original[0]
+    clave_centro = arr_original[n // 2]
+    clave_fin = arr_original[-1]
+
+    algoritmos = [
+        ("Lineal", alg.linear_search),
+        ("Binaria", alg.binary_search),
+        ("Ternaria", alg.ternary_search),
+        ("Jump", alg.jump_search),
+        ("Interpolación", alg.interpolation_search),
+        ("Exponencial", alg.exponential_search)
+    ]
 
     while True:
-        print("\nSeleccione un algoritmo:")
-        print("1. Búsqueda Lineal")
-        print("2. Búsqueda Binaria")
-        print("3. Búsqueda Ternaria")
-        print("4. Jump Search")
-        print("5. Interpolation Search")
-        print("6. Exponential Search")
+        print("\nSeleccione el tipo de prueba:")
+        print("1. Promedio General (1.000 claves mezcladas)")
+        print("2. Prueba por Posición (Inicio, Centro, Fin - 1.000 repeticiones c/u)")
         print("0. Salir")
         opcion = input("Opción: ")
 
         if opcion == '0':
             break
 
-        resultado = -1
-        # Medición de alta precisión en nanosegundos
-        start_time = time.perf_counter_ns()
+        elif opcion == '1':
+            print(f"\n--- PROMEDIO GENERAL ({n} elementos) ---")
+            for nombre, funcion in algoritmos:
+                start_time = time.perf_counter_ns()
+                for clave in claves_mezcladas:
+                    funcion(arr_original, clave)
+                end_time = time.perf_counter_ns()
+                
+                promedio_ns = (end_time - start_time) / 1000
+                print(f"{nombre}: {promedio_ns / 1_000_000.0:.6f} ms ({promedio_ns:.2f} ns)")
 
-        if opcion == '1':
-            resultado = alg.linear_search(arr_original, x)
         elif opcion == '2':
-            resultado = alg.binary_search(arr_original, x)
-        elif opcion == '3':
-            resultado = alg.ternary_search(arr_original, x)
-        elif opcion == '4':
-            resultado = alg.jump_search(arr_original, x)
-        elif opcion == '5':
-            resultado = alg.interpolation_search(arr_original, x)
-        elif opcion == '6':
-            resultado = alg.exponential_search(arr_original, x)
+            print(f"\n--- PRUEBA POR POSICIÓN ({n} elementos) ---")
+            for nombre, funcion in algoritmos:
+                # Inicio
+                t_start = time.perf_counter_ns()
+                for _ in range(1000): funcion(arr_original, clave_inicio)
+                t_end = time.perf_counter_ns()
+                prom_inicio = (t_end - t_start) / 1000.0
+
+                # Centro
+                t_start = time.perf_counter_ns()
+                for _ in range(1000): funcion(arr_original, clave_centro)
+                t_end = time.perf_counter_ns()
+                prom_centro = (t_end - t_start) / 1000.0
+
+                # Fin
+                t_start = time.perf_counter_ns()
+                for _ in range(1000): funcion(arr_original, clave_fin)
+                t_end = time.perf_counter_ns()
+                prom_fin = (t_end - t_start) / 1000.0
+
+                print(f"\n{nombre}:")
+                print(f"  Inicio: {prom_inicio / 1_000_000.0:.6f} ms")
+                print(f"  Centro: {prom_centro / 1_000_000.0:.6f} ms")
+                print(f"  Final:  {prom_fin / 1_000_000.0:.6f} ms")
         else:
-            print("Opción no válida.")
-            continue
-
-        end_time = time.perf_counter_ns()
-        duracion_ns = end_time - start_time
-        duracion_ms = duracion_ns / 1_000_000.0
-
-        if resultado != -1:
-            print(f"Elemento encontrado en el índice: {resultado}")
-        else:
-            print("Elemento NO encontrado.")
-
-        print(f"Tiempo de ejecución: {duracion_ms:.6f} milisegundos ({duracion_ns} ns)")
+            print("Opción inválida.")
 
 if __name__ == "__main__":
     main()

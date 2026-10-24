@@ -1,3 +1,5 @@
+import math
+
 def linear_search(arr, x):
     for i in range(len(arr)):
         if arr[i] == x: return i
@@ -58,7 +60,6 @@ def exponential_search(arr, x):
     i = 1
     while i < n and arr[i] <= x:
         i = i * 2
-    # Búsqueda binaria en el subarreglo
     l, r = i // 2, min(i, n - 1)
     while l <= r:
         mid = l + (r - l) // 2
